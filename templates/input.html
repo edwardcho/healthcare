@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>내몸진단 - 정보 입력</title>
+    <style>
+        body { font-family: sans-serif; text-align: center; padding: 2em; }
+        form { max-width: 400px; margin: auto; background: #f0f0f0; padding: 2em; border-radius: 16px; }
+        input, select {
+            width: 100%;
+            padding: 0.8em;
+            margin-bottom: 1em;
+            border-radius: 8px;
+            border: 1px solid #ccc;
+        }
+        button {
+            background-color: #00bfa5;
+            color: white;
+            padding: 1em;
+            border: none;
+            border-radius: 8px;
+            font-size: 1em;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <h2>건강 상태 진단을 위한 정보 입력</h2>
+    <form method="POST">
+        <label>나이</label>
+        <input type="number" name="age" required>
+
+        <label>성별</label>
+        <select name="gender" required>
+            <option value="">선택</option>
+            <option value="male">남성</option>
+            <option value="female">여성</option>
+        </select>
+
+        <label>하루 평균 식단 상태</label>
+        <select name="diet" required>
+            <option value="">선택</option>
+            <option value="poor">불균형</option>
+            <option value="average">보통</option>
+            <option value="good">균형잡힘</option>
+        </select>
+
+        <label>일주일 운동 횟수</label>
+        <input type="number" name="exercise" required>
+
+        <button type="submit">진단 결과 보기</button>
+    </form>
+</body>
+</html>

@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <style>
+        body {
+            font-family: sans-serif;
+            padding: 2em;
+            line-height: 1.6;
+        }
+        h1 { color: #00bfa5; }
+        h2 { margin-top: 2em; }
+        ul { margin-left: 1em; }
+        .section { margin-bottom: 2em; }
+    </style>
+</head>
+<body>
+    <h1>내몸진단 리포트</h1>
+
+    <div class="section">
+        <h2>📋 사용자 정보</h2>
+        <p><strong>나이:</strong> {{ age }}세</p>
+        <p><strong>성별:</strong> {{ gender }}</p>
+        <p><strong>식단 상태:</strong> {{ diet }}</p>
+        <p><strong>일주일 운동 횟수:</strong> {{ exercise }}회</p>
+    </div>
+
+    <div class="section">
+        <h2>📊 질병 예측 결과</h2>
+        <p><strong>예측 확률:</strong> {{ prediction }}%</p>
+        <p>※ 나이, 식단, 운동량 등의 데이터를 바탕으로 질병 위험도를 예측합니다.</p>
+    </div>
+
+    <div class="section">
+        <h2>🏃 운동 추천</h2>
+        <ul>
+            {% for tip in exercise_recommendations %}
+                <li>{{ tip }}</li>
+            {% endfor %}
+        </ul>
+    </div>
+
+    <div class="section">
+        <h2>🥗 식단 추천</h2>
+        <ul>
+            {% for tip in diet_recommendations %}
+                <li>{{ tip }}</li>
+            {% endfor %}
+        </ul>
+    </div>
+</body>
+</html>

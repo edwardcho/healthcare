@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <title>내몸진단 - 건강 정보 입력</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+  <style>
+    body {
+      background-color: #f8f9fa;
+    }
+    .form-container {
+      max-width: 600px;
+      margin: 50px auto;
+    }
+  </style>
+  <script>
+    function calculateBMI() {
+      const weight = parseFloat(document.getElementById("weight").value);
+      const height = parseFloat(document.getElementById("height").value) / 100;
+      if (weight > 0 && height > 0) {
+        const bmi = (weight / (height * height)).toFixed(1);
+        document.getElementById("bmi").value = bmi;
+      }
+    }
+  </script>
+</head>
+<body>
+  <div class="container form-container">
+    <div class="card shadow-sm p-4">
+      <h2 class="text-center text-primary mb-4">🩺 내몸진단 건강 정보 입력</h2>
+      <form action="/predict" method="POST">
+	  
+        <!-- ✅ 건강 진단 항목 구역 -->
+        <div class="section-title">🔍 건강 진단 항목</div>	  
+	  
+        <div class="mb-3">
+          <label>성별</label>
+          <select class="form-select" name="gender">
+            <option value="1">남</option>
+            <option value="2">여</option>
+          </select>
+        </div>
+        <div class="mb-3">
+          <label>나이</label>
+          <input type="number" class="form-control" name="age" required>
+        </div>
+        <div class="mb-3">
+          <label>인종 (NHANES 기준)</label>
+          <select class="form-select" name="race">
+            <option value="1">멕시코계 미국인</option>
+            <option value="2">멕시코계 이외, 히스패닉/라틴계</option>
+            <option value="3">백인</option>
+            <option value="4">흑인</option>
+            <option value="5">기타(아시아 등)</option>
+          </select>
+        </div>
+        <div class="mb-3">
+          <label>교육 수준</label>
+          <select class="form-select" name="education">
+            <option value="1">초등학교졸업 이하</option>
+            <option value="2">중졸~고등학교 중퇴</option>
+            <option value="3">고졸</option>
+			<option value="4">전문대졸,대학교 중퇴</option>
+			<option value="5">대졸이상</option>
+          </select>
+        </div>
+        <div class="mb-3">
+          <label>가구 소득 수준</label>
+          <select class="form-select" name="income">
+		    <option value="1">기초생활수급자</option>
+            <option value="2">저소득</option>
+            <option value="3">중간소득</option>
+            <option value="4">중상위층</option>
+			<option value="5">고소득층</option>
+          </select>
+        </div>
+
+        <div class="row">
+          <div class="col-md-6 mb-3">
+            <label>체중 (kg)</label>
+            <input type="number" class="form-control" id="weight" name="weight" oninput="calculateBMI()" required>
+          </div>
+          <div class="col-md-6 mb-3">
+            <label>신장 (cm)</label>
+            <input type="number" class="form-control" id="height" name="height" oninput="calculateBMI()" required>
+          </div>
+        </div>
+        <div class="mb-3">
+          <label>BMI</label>
+          <input type="text" class="form-control" id="bmi" name="bmi" readonly>
+        </div>
+
+        <div class="row">
+          <div class="col-md-6 mb-3">
+            <label>수축기 혈압 1회</label>
+            <input type="number" class="form-control" name="sbp1" required>
+          </div>
+          <div class="col-md-6 mb-3">
+            <label>이완기 혈압 1회</label>
+            <input type="number" class="form-control" name="dbp1" required>
+          </div>
+          <div class="col-md-6 mb-3">
+            <label>수축기 혈압 2회</label>
+            <input type="number" class="form-control" name="sbp2" required>
+          </div>
+          <div class="col-md-6 mb-3">
+            <label>이완기 혈압 2회</label>
+            <input type="number" class="form-control" name="dbp2" required>
+          </div>
+        </div>
+
+        <div class="mb-3">
+          <label>현재 흡연 여부</label>
+          <select class="form-select" name="smoking">
+            <option value="1">예</option>
+            <option value="2">아니오</option>
+          </select>
+        </div>
+        <div class="mb-3">
+          <label>최근 1년간 음주 여부</label>
+          <select class="form-select" name="alcohol">
+            <option value="1">예</option>
+            <option value="2">아니오</option>
+          </select>
+        </div>
+		
+        <!-- ✅ 정신 진단 항목 구역 -->
+        <div class="section-title">🧠 정신 진단 항목</div>
+
+        <div class="mb-3">
+          <label>결혼 여부</label>
+          <select class="form-select" name="marital_status">
+            <option value="1">결혼</option>
+            <option value="2">사별</option>
+            <option value="3">이혼</option>
+            <option value="4">미혼</option>
+          </select>
+        </div>		
+		
+        <div class="mb-3">
+          <label>심한 스트레스를 경험한 적 있습니까?</label>
+          <select class="form-select" name="strong_stress">
+            <option value="1">있음</option>
+            <option value="2">없음</option>
+          </select>
+        </div>	
+		
+        <div class="mb-3">
+          <label>하루 평균 수면 시간</label>
+          <input type="text" class="form-control" id="sleeping_time" name="sleeping_time" required>
+        </div>		
+
+        <div class="mb-3">
+          <label>지난 30일 동안, 땀이 많이 나거나 심장 박동 또는 호흡이 크게 증가할 정도의 격렬한 운동이나 활동을 10분 이상 한 적이 있습니까?</label>
+          <select class="form-select" name="strong_exercise">
+            <option value="1">있음</option>
+            <option value="2">없음</option>
+          </select>
+        </div>	
+
+        <div class="mb-3">
+          <label>지난 30일 동안, 약간 땀이 나거나 심장 박동 또는 호흡이 조금 증가할 정도의 중간 강도의 운동이나 활동을 10분 이상 한 적이 있습니까?</label>
+          <select class="form-select" name="medium_exercise">
+            <option value="1">있음</option>
+            <option value="2">없음</option>
+          </select>
+        </div>	
+		
+        <div class="mb-3">
+          <label>일주일 동안 운동 일수</label>
+          <input type="text" class="form-control" id="exercise_days" name="exercise_days" required>
+        </div>			
+	
+        <div class="mb-3">
+          <label>현재 담배를 피우십니까?</label>
+          <select class="form-select" name="smoking_01">
+            <option value="1">매일</option>
+            <option value="2">가끔</option>
+            <option value="3">전혀 안 핌</option>
+          </select>
+        </div>	
+		
+        <div class="mb-3">
+          <label>하루 평균 담배 수</label>
+          <input type="text" class="form-control" id="smoking_cnt" name="smoking_cnt" required>
+        </div>			
+
+        <div class="mb-3">
+          <label>지금까지 살면서 담배를 100개비 이상 피운 적이 있습니까?</label>
+          <select class="form-select" name="smoking_02">
+            <option value="1">예</option>
+            <option value="2">아니오</option>
+          </select>
+        </div>	
+
+        <div class="mb-3">
+          <label>지난 12개월 동안, 얼마나 자주 술을 마셨습니까?</label>
+          <select class="form-select" name="alcohol_01">
+            <option value="1">매일</option>
+            <option value="2">거의 매일</option>
+            <option value="3">주 3~4회</option>
+            <option value="4">주 1~2회</option>
+            <option value="5">월 2~3회</option>
+            <option value="6">월 1회</option>
+            <option value="7">월 1회 미만</option>
+            <option value="8">지난 12개월간 없음</option>
+          </select>
+        </div>	
+
+        <div class="mb-3">
+          <label>(지난 1주동안) 흥미나 즐거움의 상실한 적 있습니까?</label>
+          <select class="form-select" name="dpq01">
+            <option value="0">전혀 아니다</option>
+            <option value="1">며칠 동안</option>
+            <option value="2">일주일 중 절반 이상</option>
+            <option value="3">거의 매일</option>
+          </select>
+        </div>	
+
+        <div class="mb-3">
+          <label>(지난 1주동안) 우울하거나, 침울하거나, 절망적인 느낀적이 있습니까?</label>
+          <select class="form-select" name="dpq02">
+            <option value="0">전혀 아니다</option>
+            <option value="1">며칠 동안</option>
+            <option value="2">일주일 중 절반 이상</option>
+            <option value="3">거의 매일</option>
+          </select>
+        </div>	
+
+        <div class="mb-3">
+          <label>(지난 1주동안) 잠들기 어렵거나 자주 깨거나 너무 많이 잔 적이 있습니까?</label>
+          <select class="form-select" name="dpq03">
+            <option value="0">전혀 아니다</option>
+            <option value="1">며칠 동안</option>
+            <option value="2">일주일 중 절반 이상</option>
+            <option value="3">거의 매일</option>
+          </select>
+        </div>	
+
+        <div class="mb-3">
+          <label>(지난 1주동안) 피로감 또는 에너지 부족을 느낀 적이 있습니까?</label>
+          <select class="form-select" name="dpq04">
+            <option value="0">전혀 아니다</option>
+            <option value="1">며칠 동안</option>
+            <option value="2">일주일 중 절반 이상</option>
+            <option value="3">거의 매일</option>
+          </select>
+        </div>	
+
+        <div class="mb-3">
+          <label>(지난 1주동안) 식욕 변화 (과식 또는 식욕 저하)가 있었습니까?</label>
+          <select class="form-select" name="dpq05">
+            <option value="0">전혀 아니다</option>
+            <option value="1">며칠 동안</option>
+            <option value="2">일주일 중 절반 이상</option>
+            <option value="3">거의 매일</option>
+          </select>
+        </div>	
+
+        <div class="mb-3">
+          <label>(지난 1주동안) 자신에 대해 안 좋게 생각하거나 실패자처럼 느낀적이 있습니까?</label>
+          <select class="form-select" name="dpq06">
+            <option value="0">전혀 아니다</option>
+            <option value="1">며칠 동안</option>
+            <option value="2">일주일 중 절반 이상</option>
+            <option value="3">거의 매일</option>
+          </select>
+        </div>
+
+        <div class="mb-3">
+          <label>(지난 1주동안) 집중하기 어려운 적이 있습니까?</label>
+          <select class="form-select" name="dpq07">
+            <option value="0">전혀 아니다</option>
+            <option value="1">며칠 동안</option>
+            <option value="2">일주일 중 절반 이상</option>
+            <option value="3">거의 매일</option>
+          </select>
+        </div>
+		
+        <div class="mb-3">
+          <label>(지난 1주동안) 다른 사람들이 알아챌 정도로 느리게 움직이거나 안절부절못한 적이 있습니까?</label>
+          <select class="form-select" name="dpq08">
+            <option value="0">전혀 아니다</option>
+            <option value="1">며칠 동안</option>
+            <option value="2">일주일 중 절반 이상</option>
+            <option value="3">거의 매일</option>
+          </select>
+        </div>	
+
+        <div class="mb-3">
+          <label>(지난 1주동안) 자살을 생각하거나 자해 충동을 느낀적이 있습니까?</label>
+          <select class="form-select" name="dpq09">
+            <option value="0">전혀 아니다</option>
+            <option value="1">며칠 동안</option>
+            <option value="2">일주일 중 절반 이상</option>
+            <option value="3">거의 매일</option>
+          </select>
+        </div>		
+		
+        <!-- ✅ 심장 진단 항목 -->
+        <div class="section-title">❤️ 심장 진단 항목</div>
+
+        <div class="mb-3">
+          <label>고혈압 진단 받은 적이 있습니까?</label>
+          <select class="form-select" name="bp_had">
+            <option value="1">예</option>
+            <option value="2">아니오</option>
+          </select>
+        </div>
+        
+        <div class="mb-3">
+          <label>고혈압 약 복용 여부</label>
+          <select class="form-select" name="bp_medication">
+            <option value="1">예</option>
+            <option value="2">아니오</option>
+          </select>
+        </div>
+
+        <div class="d-grid">
+          <button type="submit" class="btn btn-primary mt-3">진단 결과 보기</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</body>
+</html>
