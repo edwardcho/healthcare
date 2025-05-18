@@ -22,12 +22,12 @@
       <div class="mb-4">
         <h5>🩺 예측 질병 위험도</h5>
         <ul class="list-group">
-          <li class="list-group-item">고혈압 위험도: <strong>{{ hypertension_risk }}%</strong></li>
-          <li class="list-group-item">당뇨병 위험도: <strong>{{ diabetes_risk }}%</strong></li>
-          <li class="list-group-item">비만 위험도(BMI): <strong>{{ bmi }}</strong></li>
-          <li class="list-group-item">우울증 위험도: <strong>{{ mental_health_risk }}%</strong></li>
-          <li class="list-group-item">심장마비 위험도: <strong>{{ heart_attack_risk }}%</strong></li>
-          <li class="list-group-item">협심증 위험도: <strong>{{ angina_risk }}%</strong></li>
+          <li class="list-group-item">고혈압 : <strong>{{ hb_pressure_code }}</strong> (위험도: <strong>{{ hypertension_risk }}%</strong>)</li>
+          <li class="list-group-item">당뇨병 : <strong>{{ diabetes_code }}</strong> (위험도: <strong>{{ diabetes_risk }}%</strong>)</li>
+          <li class="list-group-item">비만 (BMI): <strong>{{ bmi }}</strong></li>
+          <li class="list-group-item">우울증 : <strong>{{ mental_health_code }}</strong> (<strong>{{ mental_status }}</strong>) (위험도: <strong>{{ mental_health_risk }}%</strong>)</li>
+          <li class="list-group-item">심장마비 : <strong>{{ heart_attack_code }}</strong> (위험도: <strong>{{ heart_attack_risk }}%</strong>)</li>
+          <li class="list-group-item">협심증 : <strong>{{ angina_code }}</strong> (위험도: <strong>{{ angina_risk }}%</strong>)</li>
         </ul>
       </div>
 
