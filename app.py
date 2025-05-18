@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, send_file, redirect, url_for
+from flask import Flask, render_template, request, send_file, redirect, url_for, session, after_this_request
 from fpdf import FPDF
 import os
 import random
@@ -6,7 +6,14 @@ import random
 import joblib
 import numpy as np
 
+import uuid
+import json
+
+import warnings
+warnings.filterwarnings('ignore')
+
 app = Flask(__name__)
+app.secret_key = '1596716541.5910525'
 
 # 첫 페이지
 @app.route('/')
@@ -102,8 +109,10 @@ def predict():
     print('BMI (비만) : ', bmi)
 
     # [임시] 예측 결과 생성 (나중에 실제 모델로 교체)
-    hypertension_risk = round(hb_pressure_result_score * 100.0, 2)  #round(random.uniform(30, 90), 1)    # 고혈압
-    diabetes_risk = round(diabetes_result_score * 100.0, 2)  #round(random.uniform(20, 80), 1)        # 당뇨...
+    #hypertension_risk = round(hb_pressure_result_score * 100.0, 2)  #round(random.uniform(30, 90), 1)    # 고혈압
+    #diabetes_risk = round(diabetes_result_score * 100.0, 2)  #round(random.uniform(20, 80), 1)        # 당뇨...
+    hypertension_risk = round(output_high_blood_pressure[0] * 100.0, 2)  #round(random.uniform(30, 90), 1)    # 고혈압
+    diabetes_risk = round(output_diabetes[0] * 100.0, 2)  #round(random.uniform(20, 80), 1)        # 당뇨...
 
     # 2.predict_mental_health_checkup
 
@@ -142,7 +151,8 @@ def predict():
     mental_status = get_melancholia_status(dpq_total)
     print('우울증 상태 : ', mental_status)
 
-    mental_health_risk = round(mental_health_result_score * 100.0, 1)
+    #mental_health_risk = round(mental_health_result_score * 100.0, 1)
+    mental_health_risk = round(output_mental_health[0] * 100.0, 1)
     
     # 3. predict_heart_disease_checkup
     
@@ -176,13 +186,106 @@ def predict():
     print('angina (협심증) : ', angina_result_code + 1, angina_result_score)
     #     1=Yes, 2=No   
 
-    heart_attack_risk = round(heart_attack_result_score * 100.0, 2)    
-    angina_risk = round(angina_result_score * 100.0, 2)    
+    #heart_attack_risk = round(heart_attack_result_score * 100.0, 2)    
+    #angina_risk = round(angina_result_score * 100.0, 2)    
+    heart_attack_risk = round(output_heart_attack[0] * 100.0, 2)    
+    angina_risk = round(output_angina[0] * 100.0, 2)    
 
     # 추천 로직 (간단한 조건 기반 예시)
     exercise_recommend = "주 3~5회 유산소 운동과 가벼운 근력운동을 병행하세요."
     diet_recommend = "짜지 않게, 단순당 줄이고, 채소와 단백질 위주로 식사하세요."
 
+    hb_pressure_code = "정상"
+    if hb_pressure_result_code + 1 == 1:
+        hb_pressure_code = "위험"
+    elif hb_pressure_result_code + 1 == 2:
+        hb_pressure_code = "정상"
+    
+    diabetes_code = "정상"
+    if diabetes_result_code + 1 == 1:
+        diabetes_code = "위험"
+    elif diabetes_result_code + 1 == 2:
+        diabetes_code = "정상"
+    elif diabetes_result_code + 1 == 3:
+        diabetes_code = "가능성있음"
+    
+    mental_health_code = '정상'    
+    if mental_health_result_code + 1 == 1:
+        mental_health_code = '위험'
+    elif mental_health_result_code + 1 == 2:
+        mental_health_code = '정상' 
+
+    heart_attack_code = '정상'
+    if heart_attack_result_code + 1 == 1:        
+        heart_attack_code = '위험'
+    elif heart_attack_result_code + 1 == 2:        
+        heart_attack_code = '정상'
+        
+    angina_code = '정상'
+    if angina_result_code + 1 == 1:
+        angina_code = '위험'
+    elif angina_result_code + 1 == 2:
+        angina_code = '정상'
+        
+    session['used_uuid'] = f"{uuid.uuid4().hex}"    
+    
+    used_datas = {}
+    used_datas['hb_pressure_code'] = hb_pressure_code
+    used_datas['hypertension_risk'] = hypertension_risk
+    used_datas['diabetes_code'] = diabetes_code
+    used_datas['diabetes_risk'] = diabetes_risk
+    used_datas['bmi'] = bmi
+    used_datas['mental_health_code'] = mental_health_code
+    used_datas['mental_status'] = mental_status
+    used_datas['mental_health_risk'] = mental_health_risk
+    used_datas['heart_attack_code'] = heart_attack_code
+    used_datas['heart_attack_risk'] = heart_attack_risk
+    used_datas['angina_code'] = angina_code
+    used_datas['angina_risk'] = angina_risk
+    used_datas['exercise_recommend'] = exercise_recommend
+    used_datas['diet_recommend'] = diet_recommend
+    
+    with open(os.path.join("static/reports", "used_" + session['used_uuid'] + ".json"), 'w') as f:
+        json.dump(used_datas, f)
+
+    return render_template(
+        'report.html',
+        hb_pressure_code=hb_pressure_code,
+        hypertension_risk=hypertension_risk,
+        diabetes_code=diabetes_code,
+        diabetes_risk=diabetes_risk,
+        bmi=bmi,
+        mental_health_code=mental_health_code,
+        mental_status=mental_status,
+        mental_health_risk=mental_health_risk,
+        heart_attack_code=heart_attack_code,
+        heart_attack_risk=heart_attack_risk,
+        angina_code=angina_code,
+        angina_risk=angina_risk,
+        exercise_recommend=exercise_recommend,
+        diet_recommend=diet_recommend
+    )
+
+def gen_pdf_report():
+
+    with open(os.path.join("static/reports", "used_" + session['used_uuid'] + ".json"), 'r') as f:
+        used_datas = json.load(f)
+
+    hb_pressure_code = used_datas['hb_pressure_code']
+    hypertension_risk = used_datas['hypertension_risk']
+    diabetes_code = used_datas['diabetes_code']
+    diabetes_risk = used_datas['diabetes_risk']
+    bmi = used_datas['bmi']
+    mental_health_code = used_datas['mental_health_code']
+    mental_status = used_datas['mental_status']
+    mental_health_risk = used_datas['mental_health_risk']
+    heart_attack_code = used_datas['heart_attack_code']
+    heart_attack_risk = used_datas['heart_attack_risk']
+    angina_code = used_datas['angina_code']
+    angina_risk = used_datas['angina_risk']
+    exercise_recommend = used_datas['exercise_recommend']
+    diet_recommend = used_datas['diet_recommend']
+    
     # 📄 PDF 생성
     pdf = FPDF()
     pdf.add_page()
@@ -198,36 +301,36 @@ def predict():
     pdf.cell(0, 10, txt="내몸진단 건강 리포트", ln=True)
     pdf.ln(10)
     pdf.cell(0, 10, txt=f"🩺 예측 질병 위험도", ln=True)
-    pdf.cell(0, 10, txt=f"- 고혈압 위험도: {hypertension_risk}%", ln=True)
-    pdf.cell(0, 10, txt=f"- 당뇨병 위험도: {diabetes_risk}%", ln=True)
+    pdf.cell(0, 10, txt=f"- 고혈압 : {hb_pressure_code} (위험도: {hypertension_risk}%)", ln=True)
+    pdf.cell(0, 10, txt=f"- 당뇨병 : {diabetes_code} (위험도: {diabetes_risk}%)", ln=True)
     pdf.cell(0, 10, txt=f"- 비만(BMI): {bmi}", ln=True)
-    pdf.cell(0, 10, txt=f"- 우울증 위험도: {mental_health_risk}%", ln=True)
-    pdf.cell(0, 10, txt=f"- 심장마비 위험도: {heart_attack_risk}%", ln=True)
-    pdf.cell(0, 10, txt=f"- 협심증 위험도: {angina_risk}%", ln=True)
+    pdf.cell(0, 10, txt=f"- 우울증 : {mental_health_code} ({mental_status}) (위험도: {mental_health_risk}%)", ln=True)
+    pdf.cell(0, 10, txt=f"- 심장마비 : {heart_attack_code} (위험도: {heart_attack_risk}%)", ln=True)
+    pdf.cell(0, 10, txt=f"- 협심증 : {angina_code} (위험도: {angina_risk}%)", ln=True)
     pdf.ln(10)
     pdf.multi_cell(0, 10, f"🏃 추천 운동:\n{exercise_recommend}")
     pdf.ln(5)
     pdf.multi_cell(0, 10, f"🥗 추천 식단:\n{diet_recommend}")
 
     # 저장
-    pdf.output("static/reports/report.pdf")
-
-    return render_template(
-        'report.html',
-        hypertension_risk=hypertension_risk,
-        diabetes_risk=diabetes_risk,
-        bmi=bmi,
-        mental_health_risk=mental_health_risk,
-        heart_attack_risk=heart_attack_risk,
-        angina_risk=angina_risk,
-        exercise_recommend=exercise_recommend,
-        diet_recommend=diet_recommend
-    )
+    pdf.output(os.path.join("static/reports", "report_" + session['used_uuid'] + ".pdf"))
 
 # PDF 다운로드
 @app.route('/download_report')
 def download_report():
-    return send_file("static/reports/report.pdf", as_attachment=True)
+
+    gen_pdf_report()
+    send_pdf_filepath = os.path.join("static/reports", "report_" + session['used_uuid'] + ".pdf")
+    
+    @after_this_request
+    def remove_file(response):
+        try:
+            os.remove(send_pdf_filepath)
+        except Exception as e:
+            app.logger.error(f"파일 삭제 실패: {e}")
+        return response    
+    
+    return send_file(send_pdf_filepath, as_attachment=True)
 
 if __name__ == '__main__':
     app.run(debug=True)
