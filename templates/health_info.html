@@ -1,0 +1,155 @@
+
+<!-- health_info.html -->
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <title>내몸진단 - 건강 정보 입력</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+  <style>
+    body {
+      background-color: #f8f9fa;
+    }
+    .form-container {
+      max-width: 600px;
+      margin: 50px auto;
+    }
+  </style>  
+  <script>
+    function calculateBMI() {
+      const weight = parseFloat(document.getElementById("weight").value);
+      const height = parseFloat(document.getElementById("height").value) / 100;
+      if (weight > 0 && height > 0) {
+        const bmi = (weight / (height * height)).toFixed(1);
+        document.getElementById("bmi").value = bmi;
+      }
+    }
+  </script>
+</head>
+<body>
+  <div class="container form-container">
+    <div class="card shadow-sm p-4">
+        <h2 class="text-center text-primary mb-4">🩺 건강 정보 입력</h2>
+        <form action="/mental" method="POST">
+          <!-- 성별, 나이, 인종, 교육, 소득, 체중/키, 혈압 -->
+            <div class="mb-3">
+              <label>성별</label>
+              <select class="form-select" name="gender">
+                <option value="1">남</option>
+                <option value="2">여</option>
+              </select>
+            </div>
+            <div class="mb-3">
+              <label>나이</label>
+              <input type="number" class="form-control" name="age" required>
+            </div>
+            <div class="mb-3">
+              <label>인종 (NHANES 기준)</label>
+              <select class="form-select" name="race">
+                <option value="1">멕시코계 미국인</option>
+                <option value="2">멕시코계 이외, 히스패닉/라틴계</option>
+                <option value="3">백인</option>
+                <option value="4">흑인</option>
+                <option value="5">기타(아시아 등)</option>
+              </select>
+            </div>
+            <div class="mb-3">
+              <label>교육 수준</label>
+              <select class="form-select" name="education">
+                <option value="1">초등학교졸업 이하</option>
+                <option value="2">중졸~고등학교 중퇴</option>
+                <option value="3">고졸</option>
+	    		<option value="4">전문대졸,대학교 중퇴</option>
+	    		<option value="5">대졸이상</option>
+              </select>
+            </div>
+            <div class="mb-3">
+              <label>가구 소득 수준</label>
+              <select class="form-select" name="income">
+	    	    <option value="1">기초생활수급자</option>
+                <option value="2">저소득</option>
+                <option value="3">중간소득</option>
+                <option value="4">중상위층</option>
+	    		<option value="5">고소득층</option>
+              </select>
+            </div>
+	    
+            <div class="row">
+              <div class="col-md-6 mb-3">
+                <label>체중 (kg)</label>
+                <input type="number" class="form-control" id="weight" name="weight" oninput="calculateBMI()" required>
+              </div>
+              <div class="col-md-6 mb-3">
+                <label>신장 (cm)</label>
+                <input type="number" class="form-control" id="height" name="height" oninput="calculateBMI()" required>
+              </div>
+            </div>
+            <div class="mb-3">
+              <label>BMI</label>
+              <input type="text" class="form-control" id="bmi" name="bmi" readonly>
+            </div>
+	    
+            <div class="row">
+              <div class="col-md-6 mb-3">
+                <label>수축기 혈압 1회</label>
+                <input type="number" class="form-control" name="sbp1" required>
+              </div>
+              <div class="col-md-6 mb-3">
+                <label>이완기 혈압 1회</label>
+                <input type="number" class="form-control" name="dbp1" required>
+              </div>
+              <div class="col-md-6 mb-3">
+                <label>수축기 혈압 2회</label>
+                <input type="number" class="form-control" name="sbp2" required>
+              </div>
+              <div class="col-md-6 mb-3">
+                <label>이완기 혈압 2회</label>
+                <input type="number" class="form-control" name="dbp2" required>
+              </div>
+            </div>
+	    
+            <div class="mb-3">
+              <label>현재 흡연 여부</label>
+              <select class="form-select" name="smoking">
+                <option value="1">예</option>
+                <option value="2">아니오</option>
+              </select>
+            </div>
+            <div class="mb-3">
+              <label>최근 1년간 음주 여부</label>
+              <select class="form-select" name="alcohol">
+                <option value="1">예</option>
+                <option value="2">아니오</option>
+              </select>
+            </div>	  
+          <!-- ... (생략 없이 복사) ... -->
+          <div class="d-grid">
+            <button type="submit" class="btn btn-primary">다음: 정신 건강</button>
+          </div>
+        </form>
+    </div>
+  </div>
+  
+  <!-- ⬇️ body 태그 끝나기 전에 로딩 오버레이 삽입 -->
+  <div id="loading-overlay" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(255,255,255,0.7); z-index:9999;">
+    <div class="d-flex justify-content-center align-items-center" style="height:100%;">
+      <div class="spinner-border text-primary" role="status" style="width: 3rem; height: 3rem;">
+        <span class="visually-hidden">Loading...</span>
+      </div>
+    </div>
+  </div>
+  
+  <!-- ⬇️ 자바스크립트: 폼 제출 시 로딩 오버레이 표시 -->
+  <script>
+    document.addEventListener("DOMContentLoaded", function () {
+      const forms = document.querySelectorAll("form");
+      forms.forEach(form => {
+        form.addEventListener("submit", function () {
+          document.getElementById("loading-overlay").style.display = "block";
+        });
+      });
+    });
+  </script>
+  
+</body>
+</html>

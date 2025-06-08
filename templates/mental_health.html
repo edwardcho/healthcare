@@ -1,0 +1,224 @@
+
+<!-- mental_health.html -->
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <title>내몸진단 - 정신 건강</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+  <style>
+    body {
+      background-color: #f8f9fa;
+    }
+    .form-container {
+      max-width: 600px;
+      margin: 50px auto;
+    }
+  </style>  
+</head>
+<body>
+  <div class="container form-container">
+    <div class="card shadow-sm p-4">
+        <h2 class="text-center text-primary mb-4">🧠 정신 건강 진단</h2>
+        <form action="/heart" method="POST">
+          <!-- 결혼 상태, 스트레스, 수면시간, 운동, 흡연/음주, 우울 증상 -->
+            <div class="mb-3">
+              <label>결혼 여부</label>
+              <select class="form-select" name="marital_status">
+                <option value="1">결혼</option>
+                <option value="2">사별</option>
+                <option value="3">이혼</option>
+                <option value="4">미혼</option>
+              </select>
+            </div>		
+	    	
+            <div class="mb-3">
+              <label>심한 스트레스를 경험한 적 있습니까?</label>
+              <select class="form-select" name="strong_stress">
+                <option value="1">있음</option>
+                <option value="2">없음</option>
+              </select>
+            </div>	
+	    	
+            <div class="mb-3">
+              <label>하루 평균 수면 시간</label>
+              <input type="text" class="form-control" id="sleeping_time" name="sleeping_time" required>
+            </div>		
+	    
+            <div class="mb-3">
+              <label>지난 30일 동안, 땀이 많이 나거나 심장 박동 또는 호흡이 크게 증가할 정도의 격렬한 운동이나 활동을 10분 이상 한 적이 있습니까?</label>
+              <select class="form-select" name="strong_exercise">
+                <option value="1">있음</option>
+                <option value="2">없음</option>
+              </select>
+            </div>	
+	    
+            <div class="mb-3">
+              <label>지난 30일 동안, 약간 땀이 나거나 심장 박동 또는 호흡이 조금 증가할 정도의 중간 강도의 운동이나 활동을 10분 이상 한 적이 있습니까?</label>
+              <select class="form-select" name="medium_exercise">
+                <option value="1">있음</option>
+                <option value="2">없음</option>
+              </select>
+            </div>	
+	    	
+            <div class="mb-3">
+              <label>일주일 동안 운동 일수</label>
+              <input type="text" class="form-control" id="exercise_days" name="exercise_days" required>
+            </div>			
+	    
+            <div class="mb-3">
+              <label>현재 담배를 피우십니까?</label>
+              <select class="form-select" name="smoking_01">
+                <option value="1">매일</option>
+                <option value="2">가끔</option>
+                <option value="3">전혀 안 핌</option>
+              </select>
+            </div>	
+	    	
+            <div class="mb-3">
+              <label>하루 평균 담배 수</label>
+              <input type="text" class="form-control" id="smoking_cnt" name="smoking_cnt" required>
+            </div>			
+	    
+            <div class="mb-3">
+              <label>지금까지 살면서 담배를 100개비 이상 피운 적이 있습니까?</label>
+              <select class="form-select" name="smoking_02">
+                <option value="1">예</option>
+                <option value="2">아니오</option>
+              </select>
+            </div>	
+	    
+            <div class="mb-3">
+              <label>지난 12개월 동안, 얼마나 자주 술을 마셨습니까?</label>
+              <select class="form-select" name="alcohol_01">
+                <option value="1">매일</option>
+                <option value="2">거의 매일</option>
+                <option value="3">주 3~4회</option>
+                <option value="4">주 1~2회</option>
+                <option value="5">월 2~3회</option>
+                <option value="6">월 1회</option>
+                <option value="7">월 1회 미만</option>
+                <option value="8">지난 12개월간 없음</option>
+              </select>
+            </div>	
+	    
+            <div class="mb-3">
+              <label>(지난 1주동안) 흥미나 즐거움의 상실한 적 있습니까?</label>
+              <select class="form-select" name="dpq01">
+                <option value="0">전혀 아니다</option>
+                <option value="1">며칠 동안</option>
+                <option value="2">일주일 중 절반 이상</option>
+                <option value="3">거의 매일</option>
+              </select>
+            </div>	
+	    
+            <div class="mb-3">
+              <label>(지난 1주동안) 우울하거나, 침울하거나, 절망적인 느낀적이 있습니까?</label>
+              <select class="form-select" name="dpq02">
+                <option value="0">전혀 아니다</option>
+                <option value="1">며칠 동안</option>
+                <option value="2">일주일 중 절반 이상</option>
+                <option value="3">거의 매일</option>
+              </select>
+            </div>	
+	    
+            <div class="mb-3">
+              <label>(지난 1주동안) 잠들기 어렵거나 자주 깨거나 너무 많이 잔 적이 있습니까?</label>
+              <select class="form-select" name="dpq03">
+                <option value="0">전혀 아니다</option>
+                <option value="1">며칠 동안</option>
+                <option value="2">일주일 중 절반 이상</option>
+                <option value="3">거의 매일</option>
+              </select>
+            </div>	
+	    
+            <div class="mb-3">
+              <label>(지난 1주동안) 피로감 또는 에너지 부족을 느낀 적이 있습니까?</label>
+              <select class="form-select" name="dpq04">
+                <option value="0">전혀 아니다</option>
+                <option value="1">며칠 동안</option>
+                <option value="2">일주일 중 절반 이상</option>
+                <option value="3">거의 매일</option>
+              </select>
+            </div>	
+	    
+            <div class="mb-3">
+              <label>(지난 1주동안) 식욕 변화 (과식 또는 식욕 저하)가 있었습니까?</label>
+              <select class="form-select" name="dpq05">
+                <option value="0">전혀 아니다</option>
+                <option value="1">며칠 동안</option>
+                <option value="2">일주일 중 절반 이상</option>
+                <option value="3">거의 매일</option>
+              </select>
+            </div>	
+	    
+            <div class="mb-3">
+              <label>(지난 1주동안) 자신에 대해 안 좋게 생각하거나 실패자처럼 느낀적이 있습니까?</label>
+              <select class="form-select" name="dpq06">
+                <option value="0">전혀 아니다</option>
+                <option value="1">며칠 동안</option>
+                <option value="2">일주일 중 절반 이상</option>
+                <option value="3">거의 매일</option>
+              </select>
+            </div>
+	    
+            <div class="mb-3">
+              <label>(지난 1주동안) 집중하기 어려운 적이 있습니까?</label>
+              <select class="form-select" name="dpq07">
+                <option value="0">전혀 아니다</option>
+                <option value="1">며칠 동안</option>
+                <option value="2">일주일 중 절반 이상</option>
+                <option value="3">거의 매일</option>
+              </select>
+            </div>
+	    	
+            <div class="mb-3">
+              <label>(지난 1주동안) 다른 사람들이 알아챌 정도로 느리게 움직이거나 안절부절못한 적이 있습니까?</label>
+              <select class="form-select" name="dpq08">
+                <option value="0">전혀 아니다</option>
+                <option value="1">며칠 동안</option>
+                <option value="2">일주일 중 절반 이상</option>
+                <option value="3">거의 매일</option>
+              </select>
+            </div>	
+	    
+            <div class="mb-3">
+              <label>(지난 1주동안) 자살을 생각하거나 자해 충동을 느낀적이 있습니까?</label>
+              <select class="form-select" name="dpq09">
+                <option value="0">전혀 아니다</option>
+                <option value="1">며칠 동안</option>
+                <option value="2">일주일 중 절반 이상</option>
+                <option value="3">거의 매일</option>
+              </select>
+            </div>			  
+          <!-- ... (해당 항목들만 복사) ... -->
+          <div class="d-grid">
+            <button type="submit" class="btn btn-primary">다음: 심장 건강</button>
+          </div>
+        </form>
+    </div>
+  </div>
+
+  <!-- ⬇️ body 태그 끝나기 전에 로딩 오버레이 삽입 -->
+  <div id="loading-overlay" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(255,255,255,0.7); z-index:9999;">
+    <div class="d-flex justify-content-center align-items-center" style="height:100%;">
+      <div class="spinner-border text-primary" role="status" style="width: 3rem; height: 3rem;">
+        <span class="visually-hidden">Loading...</span>
+      </div>
+    </div>
+  </div>
+  
+  <!-- ⬇️ 자바스크립트: 폼 제출 시 로딩 오버레이 표시 -->
+  <script>
+    document.addEventListener("DOMContentLoaded", function () {
+      const forms = document.querySelectorAll("form");
+      forms.forEach(form => {
+        form.addEventListener("submit", function () {
+          document.getElementById("loading-overlay").style.display = "block";
+        });
+      });
+    });
+  </script>  
+  
+</body>
+</html>
