@@ -20,10 +20,26 @@ app.secret_key = '1596716541.5910525'
 def index():
     return render_template('intro.html')
 
+'''
 # 건강 정보 입력 페이지
 @app.route('/form')
 def form():
     return render_template('form.html')
+'''
+
+@app.route('/health', methods=['GET', 'POST'])
+def health():
+    return render_template('health_info.html')
+
+@app.route('/mental', methods=['POST'])
+def mental():
+    session['health_data'] = request.form.to_dict()
+    return render_template('mental_health.html')
+
+@app.route('/heart', methods=['POST'])
+def heart():
+    session['mental_data'] = request.form.to_dict()
+    return render_template('heart_health.html')
 
 # 우울증 스코어
 def get_melancholia_status(score):
@@ -43,6 +59,10 @@ def get_melancholia_status(score):
 @app.route('/predict', methods=['POST'])
 def predict():
     form_data = request.form.to_dict()
+    
+    #final_data = {**session.get('health_data', {}), **session.get('mental_data', {}), **heart_data}
+    #print(final_data)
+    #exit(0)
     
     gender = int(form_data.get("gender", 1))
     age = int(form_data.get("age", 40))
@@ -192,40 +212,71 @@ def predict():
     angina_risk = round(output_angina[0] * 100.0, 2)    
 
     # 추천 로직 (간단한 조건 기반 예시)
-    exercise_recommend = "주 3~5회 유산소 운동과 가벼운 근력운동을 병행하세요."
-    diet_recommend = "짜지 않게, 단순당 줄이고, 채소와 단백질 위주로 식사하세요."
+    #exercise_recommend = "주 3~5회 유산소 운동과 가벼운 근력운동을 병행하세요."
+    #diet_recommend = "짜지 않게, 단순당 줄이고, 채소와 단백질 위주로 식사하세요."
+    
+    exercise_recommend = ''
+    diet_recommend = ''
 
     hb_pressure_code = "정상"
     if hb_pressure_result_code + 1 == 1:
         hb_pressure_code = "위험"
+        exercise_recommend = '혈압을 낮추기 위해 매일 30분 이상 빠르게 걷기나 수영 같은 유산소 운동을 실천해보세요.'
+        diet_recommend = '나트륨 섭취를 줄이고, 과일과 채소가 풍부한 DASH 식단을 실천하세요.'
+        
     elif hb_pressure_result_code + 1 == 2:
         hb_pressure_code = "정상"
+        exercise_recommend = '혈압 유지를 위해 규칙적인 유산소 운동을 계속 유지하세요.'
+        diet_recommend = '싱겁게 먹는 습관을 유지하고, 채소와 과일 섭취를 꾸준히 하세요.'
     
     diabetes_code = "정상"
     if diabetes_result_code + 1 == 1:
         diabetes_code = "위험"
+        exercise_recommend += '\n' + '당 조절을 위해 매일 유산소 운동과 주 2회 이상 근력 운동을 병행하세요.'
+        diet_recommend += '\n' + '정제 탄수화물을 피하고, 식이섬유가 풍부한 저지방 식품 위주로 식사하세요.'
+        
     elif diabetes_result_code + 1 == 2:
         diabetes_code = "정상"
+        exercise_recommend += '\n' + '당뇨 예방을 위해 걷기, 자전거 타기 같은 유산소 운동을 꾸준히 하세요.'
+        diet_recommend += '\n' + '혈당 안정에 도움이 되는 통곡물과 채소 중심 식단을 유지하세요.'
+
     elif diabetes_result_code + 1 == 3:
         diabetes_code = "가능성있음"
+        exercise_recommend += '\n' + '당 조절을 위해 매일 유산소 운동과 주 2회 이상 근력 운동을 병행하세요.'
+        diet_recommend += '\n' + '정제 탄수화물을 피하고, 식이섬유가 풍부한 저지방 식품 위주로 식사하세요.'
     
     mental_health_code = '정상'    
     if mental_health_result_code + 1 == 1:
         mental_health_code = '위험'
+        exercise_recommend += '\n' + '기분 개선을 위해 산책, 요가, 가벼운 스트레칭을 하루 20~30분 실천해보세요.'
+        diet_recommend += '\n' + '오메가-3가 풍부한 음식과 비타민B가 많은 채소, 견과류를 섭취해보세요.'
+        
     elif mental_health_result_code + 1 == 2:
         mental_health_code = '정상' 
+        exercise_recommend += '\n' + '정신 건강 유지를 위해 가벼운 신체활동을 규칙적으로 유지하세요.'
+        diet_recommend += '\n' + '기분 안정을 돕는 생선, 과일, 채소 위주 식단을 계속 유지해보세요.'
 
     heart_attack_code = '정상'
     if heart_attack_result_code + 1 == 1:        
         heart_attack_code = '위험'
+        exercise_recommend += '\n' + '의사 상담 후 가벼운 걷기부터 시작해 점차 활동량을 늘리세요. 과도한 무리 운동은 피하세요.'
+        diet_recommend += '\n' + '콜레스테롤과 포화지방이 적은 식사를 하고, 심장 건강에 좋은 생선, 견과류를 섭취하세요.'
+        
     elif heart_attack_result_code + 1 == 2:        
         heart_attack_code = '정상'
+        exercise_recommend += '\n' + '심혈관 건강 유지를 위해 주 3~5회 유산소 중심 운동을 계속하세요.'
+        diet_recommend += '\n' + '심장을 보호하는 지중해식 식단을 유지하세요. 좋은 지방을 포함하는 식품이 도움이 됩니다.'
         
     angina_code = '정상'
     if angina_result_code + 1 == 1:
         angina_code = '위험'
+        exercise_recommend += '\n' + '가벼운 산책부터 시작해 점차 활동량을 늘리되, 무리하지 않도록 조절하세요.'
+        diet_recommend += '\n' + '지방과 염분이 낮은 식단을 실천하고, 심혈관 보호에 좋은 식품을 선택하세요.'
+
     elif angina_result_code + 1 == 2:
         angina_code = '정상'
+        exercise_recommend += '\n' + '심장 건강을 위해 걷기 등 저강도 유산소 운동을 꾸준히 유지하세요.'
+        diet_recommend += '\n' + '심혈관 예방을 위한 저염, 저지방 중심 식단을 유지하세요.'
         
     session['used_uuid'] = f"{uuid.uuid4().hex}"    
     
